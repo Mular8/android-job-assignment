@@ -32,11 +32,11 @@ class MealsViewModel @Inject constructor(
 
     fun submitQuery(query: String?) {
         viewModelScope.launch {
-            val filteredMeals = if (query?.isNotBlank() == true) {
+            val filteredMeals = if (query.isNullOrBlank()) {
                 _state.value.meals
             } else {
                 _state.value.meals.filter {
-                    it.strMeal.lowercase().contains(query?.lowercase() ?: "")
+                    it.strMeal.lowercase().contains(query.lowercase() ?: "")
                 }
             }
             _state.emit(_state.value.copy(query = query, filteredMeals = filteredMeals))

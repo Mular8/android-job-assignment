@@ -3,6 +3,7 @@ package com.schibsted.nde.feature.details
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,7 +33,10 @@ fun DetailsScreen(idMeal: String, viewModel: MealsViewModel) {
 
 @Composable
 private fun DetailsContent(mealResponse: MealResponse) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(top = 20.dp)
+    ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(mealResponse.strMealThumb)
@@ -40,13 +44,18 @@ private fun DetailsContent(mealResponse: MealResponse) {
                 .build(),
             contentDescription = mealResponse.strMeal
         )
-        Text(text = mealResponse.strMeal, fontSize = 32.sp)
+        Text(
+            text = mealResponse.strMeal,
+            fontSize = 32.sp,
+            modifier = Modifier.padding(top = 16.dp)
+        )
         mealResponse.strYoutube?.let {
             YouTubePlayerComposable(
                 videoId = it.extractId(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
+                    .padding(top = 16.dp)
             )
         }
     }

@@ -2,8 +2,10 @@ package com.schibsted.nde.feature.meals
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,19 +57,20 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.gson.Gson
 import com.schibsted.nde.feature.common.MealImage
 import com.schibsted.nde.model.MealResponse
 import com.schibsted.nde.ui.typography
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreen(viewModel: MealsViewModel) {
+fun MealsScreen(viewModel: MealsViewModel, navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -140,7 +143,9 @@ fun MealsScreen(viewModel: MealsViewModel) {
                 )
             },
             content = {
-                MealsScreenContent(viewModel)
+                MealsScreenContent(viewModel) {
+                    navController.navigate("details/${it.idMeal}")
+                }
             }
         )
     }
@@ -148,7 +153,7 @@ fun MealsScreen(viewModel: MealsViewModel) {
 
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreenContent(viewModel: MealsViewModel) {
+fun MealsScreenContent(viewModel: MealsViewModel, onNavigate: (MealResponse) -> Unit) {
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -170,7 +175,7 @@ fun MealsScreenContent(viewModel: MealsViewModel) {
                             LazyColumn(modifier = Modifier.fillMaxSize()) {
                                 items(state.filteredMeals) { meal ->
                                     Divider(thickness = 8.dp)
-                                    MealRowComposable(meal)
+                                    MealRowComposable(meal, onNavigate)
                                 }
                             }
                         } else {
@@ -192,7 +197,7 @@ fun MealsScreenContent(viewModel: MealsViewModel) {
                                             0.dp
                                         )
                                     ) {
-                                        MealRowComposable(meal)
+                                        MealRowComposable(meal, onNavigate)
                                     }
                                 }
                             }
@@ -205,13 +210,16 @@ fun MealsScreenContent(viewModel: MealsViewModel) {
 }
 
 @Composable
-fun MealRowComposable(meal: MealResponse) {
+fun MealRowComposable(meal: MealResponse, onNavigate: (MealResponse) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
             .clip(RoundedCornerShape(4.dp))
             .padding(16.dp)
+            .clickable {
+                onNavigate(meal)
+            }
     ) {
         MealImage(meal.strMealThumb, Modifier.size(64.dp))
         Column(

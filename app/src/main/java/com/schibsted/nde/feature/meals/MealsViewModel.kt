@@ -24,9 +24,25 @@ class MealsViewModel @Inject constructor(
 
     fun loadMeals() {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(isLoading = true))
-            val meals = mealsRepository.getMeals()
-            _state.emit(_state.value.copy(meals = meals, filteredMeals = meals, isLoading = false))
+            try {
+                _state.emit(_state.value.copy(isLoading = true))
+                val meals = mealsRepository.getMeals()
+                _state.emit(
+                    _state.value.copy(
+                        meals = meals,
+                        filteredMeals = meals,
+                        isLoading = false
+                    )
+                )
+            } catch (e: Exception) {
+                _state.emit(
+                    _state.value.copy(
+                        meals = emptyList(),
+                        filteredMeals = emptyList(),
+                        isLoading = false
+                    )
+                )
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -41,14 +42,19 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(navController, startDestination = "meals") {
-        composable("meals") { MealsScreen(hiltViewModel(), navController) }
+        composable("meals") {
+            MealsScreen(
+                hiltViewModel(viewModelStoreOwner = LocalContext.current as MainActivity),
+                navController
+            )
+        }
         composable(
             route = "details/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
             if (id != null) {
-                DetailsScreen(idMeal = id, hiltViewModel())
+                DetailsScreen(idMeal = id, hiltViewModel(viewModelStoreOwner = LocalContext.current as MainActivity))
             }
         }
     }

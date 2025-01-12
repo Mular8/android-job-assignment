@@ -11,4 +11,6 @@ import kotlinx.coroutines.flow.Flow
 interface MealEntityDao {
     @Query("SELECT * FROM meal ORDER BY id")
     fun getAll(): Flow<List<MealEntity>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMeals(meals: List<MealEntity>)
 }

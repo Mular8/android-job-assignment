@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MealsViewModel @Inject constructor(
-    private val mealsRepository: MealsRepository,
+    private val mealsRepository: MealsRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(MealsViewState(isLoading = true))
 

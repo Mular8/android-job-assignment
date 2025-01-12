@@ -13,7 +13,7 @@ import javax.inject.Inject
 class MealsViewModel @Inject constructor(
     private val mealsRepository: MealsRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(MealsViewState(isLoading = true))
+    private val _state = MutableStateFlow(MealsViewState())
 
     val state: StateFlow<MealsViewState>
         get() = _state

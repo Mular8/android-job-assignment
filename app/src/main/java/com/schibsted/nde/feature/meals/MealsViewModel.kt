@@ -26,8 +26,7 @@ class MealsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.emit(_state.value.copy(isLoading = true))
             val meals = mealsRepository.getMeals()
-            _state.emit(_state.value.copy(meals = meals, filteredMeals = meals))
-            _state.emit(_state.value.copy(isLoading = false))
+            _state.emit(_state.value.copy(meals = meals, filteredMeals = meals, isLoading = false))
         }
     }
 
